@@ -1,147 +1,30 @@
 #define INPUT_LENGTH_LIMIT 100
-#define PCRE2_CODE_UNIT_WIDTH 8
 
-#include <stdlib.h>
 #include <stdio.h>
-#include <pcre2.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 
 // 0 -> FALSE, 1 -> TRUE
-int validateNumericInput ( char* string_to_test, int lower_bound, int upper_bound ) {
-    // Store the regex to match in a variable of type PCRE2_SPTR
-    PCRE2_SPTR regex_to_match = ( PCRE2_SPTR ) "^[0-9]+$";
+int stringIsInteger ( const char* string_to_test ) {
+    int is_number = 1;
 
-    // Here we declare the variables whose pointers we pass to the
-    // 'compile' function which creates the regex-pattern-matching object
-    int error_number;
+    int i = 0;
 
-    PCRE2_SIZE error_offset;
+    int string_length = strlen ( string_to_test );
 
-    pcre2_code *re;
-
-    // create the regex pattern-matching object
-    re = pcre2_compile (
-        regex_to_match, // the pattern to match
-        PCRE2_ZERO_TERMINATED, // indicates pattern is zero-terminated
-        0, // default options
-        &error_number, // pointer to where to store the error number
-        &error_offset, // pointer to where to store the error offset
-        NULL // use default compile context
-    );
-
-    // check if compilation of regex pattern failed
-    if ( re == NULL ) {
-        PCRE2_UCHAR error_message_buffer [ 256 ];
-        pcre2_get_error_message ( error_number, error_message_buffer, sizeof ( error_message_buffer ) );
-
-        printf ( "PCRE2 regex pattern compilation failed at offset %d: %s\n", (int)error_offset, error_message_buffer );
-
-        return 0;
-    }
-
-    puts ( "Regex compilation was successful." );
-    
-    // Still need to implement testing of whether the number is in the numeric
-    // range.
-
-    // Store the string we are trying to match the regex to (the 'subject')
-    PCRE2_SPTR subject = ( PCRE2_SPTR ) string_to_test;
-
-    // Store the length of the subject
-    PCRE2_SIZE subject_length = ( PCRE2_SIZE ) strlen ( ( char* ) subject );
-
-    // Create the match-data object
-    pcre2_match_data *match_data = pcre2_match_data_create_from_pattern ( re, NULL );
-
-    // Match the regex against the test-string
-    int match_return_value = pcre2_match (
-        re, // The compiled pattern
-        subject, // The subject string
-        subject_length, // The length of the subject
-        0, // Start at offset 0 in the subject
-        0, // Use default options
-        match_data, // block for storing the result
-        NULL // Use default match context
-    );
-
-    // Handle errors if matching failed
-    if ( match_return_value < 0 ) {
-        switch ( match_return_value ) {
-            case PCRE2_ERROR_NOMATCH:
-                puts ( "No match." );
-                break;
-            default:
-                printf ( "Matching error %d\n", match_return_value );
-                break;
+    while ( i < string_length && is_number == 1 ) {
+        if ( !isdigit ( string_to_test [ i ] ) ) {
+            is_number = 0;
         }
 
-        // Free the memory-space that was used for the match data
-        pcre2_match_data_free ( match_data );
-
-        // Free the memory-space that was used for the compiled pattern
-        pcre2_code_free ( re );
-
-        return 0;
+        i++;
     }
 
-    // If the match succeeded, get a pointer to the output vector, where
-    // string offsets are stored.
-    PCRE2_SIZE *ovector = pcre2_get_ovector_pointer ( match_data );
-
-    printf ( "Match succeeded at offset %d\n", ( int ) ovector [ 0 ] );
-
-    // if the output vector wasn't big enough
-    if ( match_return_value == 0 ) {
-        puts ( "ovector was not big enough for all the captured substrings." );
-        
-        return 1;
-    }
-
-    // guard against patterns that set the start of a match further on than
-    // its end.
-    
-    if ( ovector [ 0 ] > ovector [ 1 ] ) {
-        puts ( "\\K was used in an assertion to set the match start further on than its end." );
-        printf (
-            "From end to start the match was: %.*s\n",
-            ( int ) ( ovector [ 0 ] - ovector [ 1 ] ),
-            ( char* ) ( subject + ovector [ 1 ] )
-        );
-        puts ( "Run abandoned" );
-
-        // Free the memory-space that was used for the match data
-        pcre2_match_data_free ( match_data );
-
-        // Free the memory-space that was used for the compiled pattern
-        pcre2_code_free ( re );
-        
-        return 0;
-    }
-
-    // next, do things with the substrings stored in ovector ('output vector').
-    
-    PCRE2_SPTR substring_start;
-    PCRE2_SIZE substring_length;
-
-    for ( int i = 0; i < match_return_value; i++ ) {
-        substring_start = subject + ovector [ 2 * i ];
-        substring_length = ovector [ 2 * i + 1 ] - ovector [ 2 * i ];
-        
-        printf (
-            "%2d: %.*s\n",
-            i,
-            ( int ) substring_length, 
-            ( char* ) substring_start
-        );
-    }
-
-    pcre2_match_data_free ( match_data );
-    pcre2_code_free ( re );
-
-    return 1;
+    return is_number;
 }
 
-void displayMainMenu ( void )
+void displayMainMenu ()
 {
     puts ( "MAIN MENU:"                    );
     puts ( "(1) Display data as table"     );
@@ -157,25 +40,92 @@ void displayMainMenu ( void )
     puts ( "" );
 }
 
-void inputMainMenuChoice ( char* string_pointer ) {
-    char user_input [ INPUT_LENGTH_LIMIT ];
+int inputNumericChoice (
+    int number_of_options,
+    const char* main_prompt,
+    const char* invalid_input_message
+) {
+    char input_buffer [ INPUT_LENGTH_LIMIT ];
 
-    printf ( "Enter number of main menu option: " );
+    int input_is_number = 0;
+    int input_is_in_specified_range = 0;
 
-    fgets ( user_input, INPUT_LENGTH_LIMIT, stdin );
-    
-    *string_pointer = *user_input;
+    int input_is_valid = 0;
+
+    int input_int_value = 0;
+
+    // print the main prompt, e.g. "Enter your option: "
+    printf ( "%s", main_prompt );
+
+    // fgets () resets the input buffer every time
+    fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
+
+    // strip trailing newline character
+    input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
+
+    // check if a valid integer has been entered
+    input_is_number = stringIsInteger ( input_buffer );
+
+    // if the input is an integer
+    if ( input_is_number == 1 ) {
+        // convert the input to an integer
+        input_int_value = atoi ( input_buffer );
+
+        // check if the input is in the range of the option numbers
+        input_is_in_specified_range = ( input_int_value > 0 && input_int_value <= number_of_options ) ? 1 : 0;
+        
+        // input is valid only if it is an integer in the specified range
+        input_is_valid = ( input_is_number && input_is_in_specified_range ) ? 1 : 0;
+    }
+    // if the input is not a valid integer
+    else {
+        // the overall validity of the input is false (0)
+        input_is_valid = 0;
+    }
+
+    // repeat this routine until the user enters a valid input
+    while ( input_is_valid == 0 ) {
+        printf ( "%s\n", invalid_input_message );
+        printf ( "%s", main_prompt );
+
+        // fgets () resets the input buffer every time
+        fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
+
+        // strip trailing newline character
+        input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
+
+        input_is_number = stringIsInteger ( input_buffer );
+
+        if ( input_is_number == 1 ) {
+            input_int_value = atoi ( input_buffer );
+
+            input_is_in_specified_range = ( input_int_value > 0 && input_int_value <= number_of_options ) ? 1 : 0;
+            
+            input_is_valid = ( input_is_number && input_is_in_specified_range ) ? 1 : 0;
+        }
+        else {
+            input_is_valid = 0;
+        }
+    }
+
+    // we should be guaranteed we won't get an error since we have checked the
+    // input is numeric.
+
+    return input_int_value;
 }
 
-int main ( void ) {
-    char main_menu_choice_string [ INPUT_LENGTH_LIMIT ];
-    //unsigned int main_menu_choice_int;
+int main () {
+    int main_menu_choice;
 
     displayMainMenu ();
 
-    inputMainMenuChoice ( main_menu_choice_string );
+    main_menu_choice = inputNumericChoice (
+        10,
+        "Enter number of main menu option: ",
+        "Invalid option."
+    );
 
-    validateNumericInput ( main_menu_choice_string, 0, 10 );
+    printf ( "%d\n", main_menu_choice );
 
     return 0;
 }
