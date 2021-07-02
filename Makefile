@@ -1,7 +1,7 @@
 INCS = -I. -I/usr/include
 
 CFLAGS = -Wall ${INCS}
-LDFLAGS = -lpcre2-8
+#LDFLAGS = -lpcre2-8
 
 all: clean main
 
