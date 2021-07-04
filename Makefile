@@ -1,15 +1,21 @@
+SRC = \
+	  main.c \
+	  menu.c
+
+OBJ = ${SRC:.c=.o}
+
 INCS = -I. -I/usr/include
 
 CFLAGS = -Wall ${INCS}
 #LDFLAGS = -lpcre2-8
 
-all: clean main
+all: main
 
-main.o:
-	cc -o main.o -c main.c ${CFLAGS}
+main: ${OBJ}
+	cc -o $@ ${OBJ} ${LDFLAGS}
 
-main: main.o
-	cc -o main main.o ${LDFLAGS}
+.c.o:
+	${CC} -c ${CFLAGS} $<
 
 clean:
-	rm -f main main.o
+	rm -f main ${OBJ}
