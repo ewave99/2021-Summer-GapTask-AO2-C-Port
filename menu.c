@@ -116,3 +116,28 @@ int getNumericChoice (
     return input_int_value;
 }
 
+// returns 1 for quit, 0 for don't quit
+int confirmQuit ()
+{
+    char input_buffer [ INPUT_LENGTH_LIMIT ];
+    
+    printf ( "Are you sure you want to quit [y/n]: " );
+
+    fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
+
+    // strip trailing newline character
+    input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
+
+    // convert string to lowercase
+    for ( char *ptr = input_buffer; *ptr; ++ ptr )
+    {
+        *ptr = tolower ( *ptr );
+    }
+
+    //strcmp returns 0 if the strings are equal
+    if ( strcmp ( input_buffer, "y" ) == 0 ) {
+        return 1;
+    }
+
+    return 0;
+}
