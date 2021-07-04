@@ -21,6 +21,8 @@ int main ()
             "Invalid option."
         );
 
+        puts ( "" );
+
         if ( main_menu_choice != 10 )
         {
             doChosenAction ( main_menu_choice );
@@ -29,8 +31,6 @@ int main ()
         {
             quit = confirmQuit ();
         }
-
-        puts ( "" );
     }
     while ( quit != 1 );
 
