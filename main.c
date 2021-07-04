@@ -19,16 +19,16 @@ int main ()
             "Invalid option."
         );
 
-        printf ( "%d\n", main_menu_choice );
-
-        if ( main_menu_choice == 10 )
-        {
-            quit = confirmQuit ();
-        }
-        else
+        if ( main_menu_choice != 10 )
         {
             doChosenAction ( main_menu_choice );
         }
+        else
+        {
+            quit = confirmQuit ();
+        }
+
+        puts ( "" );
     }
     while ( quit != 1 );
 
