@@ -30,8 +30,10 @@ int stringIsInteger ( const char* string_to_test )
 
     int string_length = strlen ( string_to_test );
 
-    while ( i < string_length && is_number == 1 ) {
-        if ( !isdigit ( string_to_test [ i ] ) ) {
+    while ( i < string_length && is_number == 1 )
+    {
+        if ( ! isdigit ( string_to_test [ i ] ) )
+        {
             is_number = 0;
         }
 
@@ -63,7 +65,8 @@ int inputAndValidateNumericChoice (
     input_is_number = stringIsInteger ( input_buffer );
 
     // if the input is an integer
-    if ( input_is_number == 1 ) {
+    if ( input_is_number == 1 )
+    {
         // convert the input to an integer
         *input_int_value = atoi ( input_buffer );
 
@@ -74,7 +77,8 @@ int inputAndValidateNumericChoice (
         input_is_valid = ( input_is_number && input_is_in_specified_range ) ? 1 : 0;
     }
     // if the input is not a valid integer
-    else {
+    else
+    {
         // the overall validity of the input is false (0)
         input_is_valid = 0;
     }
@@ -135,7 +139,8 @@ int confirmQuit ()
     }
 
     //strcmp returns 0 if the strings are equal
-    if ( strcmp ( input_buffer, "y" ) == 0 ) {
+    if ( strcmp ( input_buffer, "y" ) == 0 )
+    {
         return 1;
     }
 
