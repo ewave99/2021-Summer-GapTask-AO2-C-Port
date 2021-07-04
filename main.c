@@ -1,8 +1,10 @@
 #include <stdio.h>
 
-#include "main.h"
-#include "menu.h"
 #include "generic.h"
+#include "menu.h"
+#include "main_functions.h"
+
+void doChosenAction ( int main_menu_choice );
 
 int main ()
 {
@@ -71,49 +73,4 @@ void doChosenAction ( int main_menu_choice )
         default:
             break;
     }
-}
-
-void displaySpeciesDataAsTable ()
-{
-    return;
-}
-
-void displaySpeciesDataAsBarChart ()
-{
-    return;
-}
-
-void inputSpeciesData ()
-{
-    return;
-}
-
-void pickAndEditRecord ()
-{
-    return;
-}
-
-void pickAndDeleteRecord ()
-{
-    return;
-}
-
-void sortRecords ()
-{
-    return;
-}
-
-void clearCurrentRecords ()
-{
-    return;
-}
-
-void saveAsCSV ()
-{
-    return;
-}
-
-void loadDataFromCSV ()
-{
-    return;
 }

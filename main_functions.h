@@ -1,5 +1,3 @@
-void doChosenAction ( int main_menu_choice );
-
 void displaySpeciesDataAsTable ();
 void displaySpeciesDataAsBarChart ();
 void inputSpeciesData ();
