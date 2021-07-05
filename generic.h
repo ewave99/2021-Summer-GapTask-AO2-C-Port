@@ -1,3 +1,5 @@
+#define INPUT_LENGTH_LIMIT 100
+
 int stringIsInteger ( const char* string_to_test );
 
 int inputAndValidateNumericChoice (
@@ -10,4 +12,3 @@ int getNumericChoice (
     const char* main_prompt,
     const char* invalid_input_message
 );
-

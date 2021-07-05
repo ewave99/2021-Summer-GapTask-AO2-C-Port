@@ -1,8 +1,7 @@
 SRC = \
 	  main.c \
 	  generic.c \
-	  menu.c \
-	  main_functions.c
+	  menu_functions.c
 
 OBJ = ${SRC:.c=.o}
 

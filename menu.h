@@ -1,3 +1,0 @@
-void displayMainMenu ();
-
-int confirmQuit ();
