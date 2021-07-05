@@ -5,13 +5,9 @@
 
 #include "generic.h"
 #include "menu_functions.h"
+#include "species.h"
 
-struct Species {
-    char name [ INPUT_LENGTH_LIMIT ];
-    int count;
-};
-
-int mainMenu ( struct Species* species_data_ptr );
+int mainMenu ( struct Species* species_data );
 void displayMainMenu ();
 void doChosenAction ( int main_menu_choice );
 int confirmQuit ();
@@ -36,20 +32,38 @@ int main ()
      * relevant functions.
      */
 
-    // pointer for species data array
-    struct Species *species_data_ptr;
+    // Species data array
+    struct Species *species_data;
+    // Pointer to access elements in the array
+    struct Species *ptr;
+
+    // return value for mainMenu function
+    int main_menu_return_value;
     
     // Allocate memory for 16 species records
-    species_data_ptr = ( struct Species * ) malloc ( sizeof ( struct Species ) * 16 );
+    species_data = ( struct Species * ) malloc ( sizeof ( struct Species ) * 16 );
+
     // Check for any weird errors with memory allocation
-    if ( species_data_ptr == NULL )
+    if ( species_data == NULL )
     {
         puts ( "Error in function malloc ()." );
         // abrupt exit from the program
         exit ( 1 );
     }
 
-    int main_menu_return_value = mainMenu ( species_data_ptr );
+    // point pointer to first element of species data
+    ptr = species_data;
+
+    // set elements of species data [ 0 ]
+    strcpy ( ( *ptr ).name, "Dandelion" );
+    ( *ptr ).count = 10;
+
+    ptr ++;
+
+    strcpy ( ( *ptr ).name, "Raspberry" );
+    ( *ptr ).count = 21;
+
+    main_menu_return_value = mainMenu ( species_data );
     
     if ( main_menu_return_value == 1 )
     {
@@ -59,10 +73,22 @@ int main ()
     return 0;
 }
 
-int mainMenu ( struct Species* species_data_ptr )
+int mainMenu ( struct Species* species_data )
 {
     int main_menu_choice;
     int quit = 0;
+
+    struct Species *ptr;
+
+    ptr = species_data;
+
+    printf ( "%s\n", ( *ptr ).name );
+    printf ( "%d\n", ( *ptr ).count );
+
+    ptr ++;
+
+    printf ( "%s\n", ( *ptr ).name );
+    printf ( "%d\n", ( *ptr ).count );
 
     do
     {
