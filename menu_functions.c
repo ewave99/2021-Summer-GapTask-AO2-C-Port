@@ -31,13 +31,17 @@ void inputSpeciesData ( struct Species* species_data )
 
 void inputSpeciesName ( struct Species* species_data )
 {
-    // Pointer to access elements in the array
-    //struct Species *ptr;
-
     char input_buffer [ INPUT_LENGTH_LIMIT ];
 
+    // Pointer to access elements in the array
+    struct Species *ptr;
+
+    size_t index;
+
+    // foo -> bar is the same as ( *foo ).bar
+
     // point pointer to first element of species data
-    //ptr = species_data;
+    ptr = species_data;
 
     printf ( "Enter species name: " );
 
@@ -54,7 +58,17 @@ void inputSpeciesName ( struct Species* species_data )
         input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
     }
 
-    // foo -> bar is the same as ( *foo ).bar
+    //strcpy ( ( ptr + 3 ) -> name, "banana" );
+
+    //index = 0;
+    //// get to the index of the first empty element (should be 0 in this case)
+    //while ( strcmp ( ( ptr + index ) -> name, "banana" ) != 0 && index < 10 )
+    //{
+    //    index ++;
+    //}
+
+    //// conversion character %zu is for type size_t
+    //printf ( "Index is %zu\n", index );
 }
 
 void pickAndEditRecord ()
