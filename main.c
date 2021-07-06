@@ -5,11 +5,11 @@
 
 #include "generic.h"
 #include "menu_functions.h"
-#include "species.h"
+// species.h is already included in menu_functions.h
 
 int mainMenu ( struct Species* species_data );
 void displayMainMenu ();
-void doChosenAction ( int main_menu_choice );
+void doChosenAction ( int main_menu_choice, struct Species* species_data );
 int confirmQuit ();
 
 int main ()
@@ -34,8 +34,6 @@ int main ()
 
     // Species data array
     struct Species *species_data;
-    // Pointer to access elements in the array
-    struct Species *ptr;
 
     // return value for mainMenu function
     int main_menu_return_value;
@@ -51,17 +49,6 @@ int main ()
         exit ( 1 );
     }
 
-    // point pointer to first element of species data
-    ptr = species_data;
-
-    // set elements of species data [ 0 ]
-    strcpy ( ( *ptr ).name, "Dandelion" );
-    ( *ptr ).count = 10;
-
-    ptr ++;
-
-    strcpy ( ( *ptr ).name, "Raspberry" );
-    ( *ptr ).count = 21;
 
     main_menu_return_value = mainMenu ( species_data );
     
@@ -78,18 +65,6 @@ int mainMenu ( struct Species* species_data )
     int main_menu_choice;
     int quit = 0;
 
-    struct Species *ptr;
-
-    ptr = species_data;
-
-    printf ( "%s\n", ( *ptr ).name );
-    printf ( "%d\n", ( *ptr ).count );
-
-    ptr ++;
-
-    printf ( "%s\n", ( *ptr ).name );
-    printf ( "%d\n", ( *ptr ).count );
-
     do
     {
         displayMainMenu ();
@@ -104,7 +79,7 @@ int mainMenu ( struct Species* species_data )
 
         if ( main_menu_choice != 10 )
         {
-            doChosenAction ( main_menu_choice );
+            doChosenAction ( main_menu_choice, species_data );
         }
         else
         {
@@ -134,7 +109,7 @@ void displayMainMenu ()
     puts ( "" );
 }
 
-void doChosenAction ( int main_menu_choice )
+void doChosenAction ( int main_menu_choice, struct Species* species_data )
 {
     switch ( main_menu_choice )
     {
@@ -145,7 +120,7 @@ void doChosenAction ( int main_menu_choice )
             displaySpeciesDataAsBarChart ();
             break;
         case 3:
-            inputSpeciesData ();
+            inputSpeciesData ( species_data );
             break;
         case 4:
             pickAndEditRecord ();
