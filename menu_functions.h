@@ -1,3 +1,6 @@
+#ifndef MENU_FUNCTIONS_H_
+#define MENU_FUNCTIONS_H_
+
 #include "common.h"
 
 void displaySpeciesDataAsTable ();
@@ -9,3 +12,5 @@ void sortRecords ();
 void clearCurrentRecords ();
 void saveAsCSV ();
 void loadDataFromCSV ();
+
+#endif
