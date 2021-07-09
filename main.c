@@ -3,10 +3,10 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "generic.h"
+#include "generic_functions.h"
 #include "menu_functions.h"
-// species.h is already included in menu_functions.h
 
+// initial declarations
 int mainMenu ( struct Species* species_data );
 void displayMainMenu ();
 void doChosenAction ( int main_menu_choice, struct Species* species_data );

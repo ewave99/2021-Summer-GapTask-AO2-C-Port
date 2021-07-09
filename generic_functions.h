@@ -1,3 +1,6 @@
+#ifndef GENERIC_FUNCTIONS_H_
+#define GENERIC_FUNCTIONS_H_
+
 #define INPUT_LENGTH_LIMIT 100
 
 int stringIsInteger ( const char* string_to_test );
@@ -12,3 +15,5 @@ int getNumericChoice (
     const char* main_prompt,
     const char* invalid_input_message
 );
+
+#endif

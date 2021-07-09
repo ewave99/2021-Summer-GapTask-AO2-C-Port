@@ -5,8 +5,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "species.h"
-#include "generic.h"
+#include "common.h"
+#include "generic_functions.h"
 
 void inputSpeciesName ( struct Species* species_data, char* input_buffer );
 int checkIfNameExists ( char* name, struct Species* species_data );
