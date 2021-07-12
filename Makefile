@@ -1,19 +1,19 @@
 SRC = \
 	  main.c \
 	  generic.c \
-	  menu_functions.c
+	  menu.c \
+	  data_input.c
 
 OBJ = ${SRC:.c=.o}
 
-INCS = -I. -I/usr/include
+#INCS = -I. -I/usr/include
 
 CFLAGS = -Wall ${INCS}
-#LDFLAGS = -lpcre2-8
 
 all: main
 
 main: ${OBJ}
-	cc -o $@ ${OBJ} ${LDFLAGS}
+	cc -o $@ ${OBJ} ${LIBS}
 
 .c.o:
 	${CC} -c ${CFLAGS} $<

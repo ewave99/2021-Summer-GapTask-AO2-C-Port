@@ -1,36 +1,25 @@
-#define INPUT_LENGTH_LIMIT 100
-
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "common.h"
-#include "generic_functions.h"
+#include "species.h"
+#include "generic.h"
 
-void inputSpeciesName ( struct Species* species_data, char* input_buffer );
-int checkIfNameExists ( char* name, struct Species* species_data );
+void inputSpeciesData ( Species * species_data );
+static void inputSpeciesName ( Species * species_data, char * input_buffer );
+static int checkIfNameExists ( char * name, Species * species_data );
+static void inputSpeciesCount ( char * input_buffer );
 
-void inputSpeciesCount ( char* input_buffer );
-
-void displaySpeciesDataAsTable ()
-{
-    return;
-}
-
-void displaySpeciesDataAsBarChart ()
-{
-    return;
-}
-
-void inputSpeciesData ( struct Species* species_data )
+void
+inputSpeciesData ( Species * species_data )
 {
     char input_buffer [ INPUT_LENGTH_LIMIT ];
     
     char name [ INPUT_LENGTH_LIMIT ];
     int count;
 
-    struct Species *ptr;
+    Species * ptr;
 
     int index = 0;
     
@@ -92,7 +81,8 @@ void inputSpeciesData ( struct Species* species_data )
     puts ( "" );
 }
 
-void inputSpeciesName ( struct Species* species_data, char* input_buffer )
+static void
+inputSpeciesName ( Species * species_data, char * input_buffer )
 {
     int name_exists;
 
@@ -122,16 +112,17 @@ void inputSpeciesName ( struct Species* species_data, char* input_buffer )
 }
 
 // 0 for does not exist; 1 for does exist
-int checkIfNameExists ( char* name, struct Species* species_data )
+static int
+checkIfNameExists ( char * name, Species * species_data )
 {
     int name_exists = 0;
 
-    struct Species* species_data_ptr;
+    Species * species_data_ptr;
 
     // we can guarantee that names will not be longer than INPUT_LENGTH_LIMIT
     char record_name [ INPUT_LENGTH_LIMIT ];
 
-    char* record_name_ptr;
+    char * record_name_ptr;
 
     // create pointer to initial element of species_data
     species_data_ptr = species_data;
@@ -144,9 +135,9 @@ int checkIfNameExists ( char* name, struct Species* species_data )
         // convert record name to lowercase (not in-place of course)
         record_name_ptr = record_name;
 
-        while ( *record_name_ptr )
+        while ( * record_name_ptr )
         {
-            *record_name_ptr = tolower ( *record_name_ptr );
+            * record_name_ptr = tolower ( * record_name_ptr );
 
             record_name_ptr ++;
         } // record name is now lowercase
@@ -168,7 +159,8 @@ int checkIfNameExists ( char* name, struct Species* species_data )
     return 0;
 }
 
-void inputSpeciesCount ( char* input_buffer )
+static void
+inputSpeciesCount ( char * input_buffer )
 {
     printf ( "Enter specimen count: " );
 
@@ -195,34 +187,4 @@ void inputSpeciesCount ( char* input_buffer )
 
         input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
     }
-}
-
-void pickAndEditRecord ()
-{
-    return;
-}
-
-void pickAndDeleteRecord ()
-{
-    return;
-}
-
-void sortRecords ()
-{
-    return;
-}
-
-void clearCurrentRecords ()
-{
-    return;
-}
-
-void saveAsCSV ()
-{
-    return;
-}
-
-void loadDataFromCSV ()
-{
-    return;
 }

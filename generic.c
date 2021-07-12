@@ -1,12 +1,17 @@
-#define INPUT_LENGTH_LIMIT 100
-
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "common.h"
+
+/* function declarations */
+int stringIsInteger ( const char * string_to_test );
+int inputAndValidateNumericChoice ( const int number_of_options, int * input_int_value );
+int getNumericChoice ( const int number_of_options, const char * main_prompt, const char * invalid_input_message );
+
 // 0 -> FALSE, 1 -> TRUE
-int stringIsInteger ( const char* string_to_test )
+int stringIsInteger ( const char * string_to_test )
 {
     int is_number = 1;
 
@@ -27,10 +32,7 @@ int stringIsInteger ( const char* string_to_test )
     return is_number;
 }
 
-int inputAndValidateNumericChoice (
-    const int number_of_options,
-    int *input_int_value
-)
+int inputAndValidateNumericChoice ( const int number_of_options, int *input_int_value )
 {
     char input_buffer [ INPUT_LENGTH_LIMIT ];
 
@@ -52,10 +54,10 @@ int inputAndValidateNumericChoice (
     if ( input_is_number == 1 )
     {
         // convert the input to an integer
-        *input_int_value = atoi ( input_buffer );
+        * input_int_value = atoi ( input_buffer );
 
         // check if the input is in the range of the option numbers
-        input_is_in_specified_range = ( *input_int_value > 0 && *input_int_value <= number_of_options ) ? 1 : 0;
+        input_is_in_specified_range = ( * input_int_value > 0 && * input_int_value <= number_of_options ) ? 1 : 0;
         
         // input is valid only if it is an integer in the specified range
         input_is_valid = ( input_is_number && input_is_in_specified_range ) ? 1 : 0;
@@ -72,8 +74,8 @@ int inputAndValidateNumericChoice (
 
 int getNumericChoice (
     const int number_of_options,
-    const char* main_prompt,
-    const char* invalid_input_message
+    const char * main_prompt,
+    const char * invalid_input_message
 )
 {
     int input_int_value = 0;
