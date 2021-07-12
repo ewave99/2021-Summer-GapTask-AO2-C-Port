@@ -3,9 +3,11 @@
 
 #include "common.h"
 
-typedef struct {
+typedef struct
+{
     char name [ INPUT_LENGTH_LIMIT ];
     int count;
-} Species;
+}
+Species;
 
 #endif

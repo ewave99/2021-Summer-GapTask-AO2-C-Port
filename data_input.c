@@ -1,10 +1,10 @@
-#include <stdio.h>
-#include <string.h>
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "species.h"
 #include "generic.h"
+#include "species.h"
 
 void inputSpeciesData ( Species * species_data );
 static void inputSpeciesName ( Species * species_data, char * input_buffer );

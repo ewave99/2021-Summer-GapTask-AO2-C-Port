@@ -1,6 +1,6 @@
-#include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "common.h"
@@ -75,11 +75,7 @@ inputAndValidateNumericChoice ( const int number_of_options, int *input_int_valu
 }
 
 int
-getNumericChoice (
-    const int number_of_options,
-    const char * main_prompt,
-    const char * invalid_input_message
-)
+getNumericChoice ( const int number_of_options, const char * main_prompt, const char * invalid_input_message )
 {
     int input_int_value = 0;
     int input_is_valid = 0;

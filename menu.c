@@ -1,10 +1,10 @@
-#include <stdio.h>
 #include <ctype.h>
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "species.h"
 #include "generic.h"
+#include "species.h"
 
 /* function declarations */
 int mainMenu ( Species * species_data );
