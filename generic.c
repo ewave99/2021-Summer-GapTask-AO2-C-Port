@@ -11,7 +11,8 @@ int inputAndValidateNumericChoice ( const int number_of_options, int * input_int
 int getNumericChoice ( const int number_of_options, const char * main_prompt, const char * invalid_input_message );
 
 // 0 -> FALSE, 1 -> TRUE
-int stringIsInteger ( const char * string_to_test )
+int
+stringIsInteger ( const char * string_to_test )
 {
     int is_number = 1;
 
@@ -32,7 +33,8 @@ int stringIsInteger ( const char * string_to_test )
     return is_number;
 }
 
-int inputAndValidateNumericChoice ( const int number_of_options, int *input_int_value )
+int
+inputAndValidateNumericChoice ( const int number_of_options, int *input_int_value )
 {
     char input_buffer [ INPUT_LENGTH_LIMIT ];
 
@@ -72,7 +74,8 @@ int inputAndValidateNumericChoice ( const int number_of_options, int *input_int_
     return input_is_valid;
 }
 
-int getNumericChoice (
+int
+getNumericChoice (
     const int number_of_options,
     const char * main_prompt,
     const char * invalid_input_message
