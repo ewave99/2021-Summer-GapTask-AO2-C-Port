@@ -9,6 +9,7 @@ Original: <https://github.com/ewave99/2021-Summer-GapTask-AO2>
 
 - No validation for the input of the species name
 - Names are case-sensitive when checking whether they already exist
+- Text is right-aligned in table cells
 
 ## To do
 
