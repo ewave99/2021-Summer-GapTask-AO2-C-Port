@@ -33,8 +33,6 @@ inputSpeciesData ( Species * species_data )
         index ++;
     }
 
-    printf ( "First empty struct is %d\n", index );
-
     puts ( "INPUT SPECIES DATA:" );
 
     puts ( "Inputting species data. Leave either field blank to stop." );
