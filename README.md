@@ -8,6 +8,7 @@ Original: <https://github.com/ewave99/2021-Summer-GapTask-AO2>
 ## Differences from the original Python version:
 
 - No validation for the input of the species name
+- Names are case-sensitive when checking whether they already exist
 
 ## To do
 

@@ -26,6 +26,15 @@ inputSpeciesData ( Species * species_data )
     
     ptr = species_data;
 
+    // fast forward till we get to the first empty struct
+    while ( index < 16 && strcmp ( ptr -> name, "" ) != 0 )
+    {
+        ptr ++;
+        index ++;
+    }
+
+    printf ( "First empty struct is %d\n", index );
+
     puts ( "INPUT SPECIES DATA:" );
 
     puts ( "Inputting species data. Leave either field blank to stop." );
@@ -39,6 +48,8 @@ inputSpeciesData ( Species * species_data )
     // input until user leaves the input blank
     while ( strcmp ( input_buffer, "" ) != 0 && index < 16 )
     {
+        strcpy ( name, input_buffer );
+
         // input species count
         inputSpeciesCount ( input_buffer );
 
@@ -108,7 +119,7 @@ inputSpeciesName ( Species * species_data, char * input_buffer )
 
         input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
 
-        checkIfNameExists ( input_buffer, species_data );
+        name_exists = checkIfNameExists ( input_buffer, species_data );
     }
 }
 
@@ -116,35 +127,22 @@ inputSpeciesName ( Species * species_data, char * input_buffer )
 static int
 checkIfNameExists ( char * name, Species * species_data )
 {
-    int name_exists = 0;
+    int name_exists;
 
     Species * species_data_ptr;
 
-    // we can guarantee that names will not be longer than INPUT_LENGTH_LIMIT
-    char record_name [ INPUT_LENGTH_LIMIT ];
-
-    char * record_name_ptr;
+    // default existence of name is 0
+    name_exists = 0;
 
     // create pointer to initial element of species_data
     species_data_ptr = species_data;
 
+    // while the name does not exist and the 'name' value of the current species
+    // struct = 
     while ( name_exists == 0 && strcmp ( species_data_ptr -> name, "" ) != 0 )
     {
-        // make a copy of the record name so we can compare the lowercase version
-        strcpy ( record_name, species_data_ptr -> name );
-
-        // convert record name to lowercase (not in-place of course)
-        record_name_ptr = record_name;
-
-        while ( * record_name_ptr )
-        {
-            * record_name_ptr = tolower ( * record_name_ptr );
-
-            record_name_ptr ++;
-        } // record name is now lowercase
-
         // if the names are equal
-        if ( strcmp ( name, record_name ) == 0 )
+        if ( strcmp ( name, species_data_ptr -> name ) == 0 )
         {
             name_exists = 1;
         }
