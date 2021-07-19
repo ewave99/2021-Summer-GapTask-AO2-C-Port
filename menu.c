@@ -13,6 +13,7 @@ static void doChosenAction ( int main_menu_choice, Species * species_data );
 static int confirmQuit ();
 
 void inputSpeciesData ( Species * species_data );
+void displaySpeciesDataAsTable ( Species * species_data );
 
 int
 mainMenu ( Species * species_data )
@@ -70,10 +71,10 @@ doChosenAction ( int main_menu_choice, Species * species_data )
 {
     switch ( main_menu_choice )
     {
-        /*
         case 1:
-            displaySpeciesDataAsTable ();
+            displaySpeciesDataAsTable ( species_data );
             break;
+        /*
         case 2:
             displaySpeciesDataAsBarChart ();
             break;

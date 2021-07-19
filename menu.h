@@ -5,8 +5,8 @@
 
 int mainMenu ( Species * species_data );
 
-/*
 void displaySpeciesDataAsTable ();
+/*
 void displaySpeciesDataAsBarChart ();
 */
 void inputSpeciesData ( Species * species_data );

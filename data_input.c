@@ -171,7 +171,7 @@ inputSpeciesCount ( char * input_buffer )
             // by limiting the user input to 9 or fewer characters, we ensure that
             // we are always below the integer limit (2 147 483 547), meaning there
             // will never be an integer overflow.
-            strlen ( input_buffer ) > 9
+            strlen ( input_buffer ) > COUNT_STR_LENGTH_LIMIT
         ) &&
         strcmp ( input_buffer, "" ) != 0
     )
