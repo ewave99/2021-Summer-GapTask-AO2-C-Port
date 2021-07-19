@@ -48,7 +48,7 @@ void displaySpeciesDataAsTable ( Species * species_data )
     }
 
     /* print headers */
-    printf ( "%s%*s %s%*s\n", "name", max_name_field_width - 4, "", "count", max_count_field_width - 5, "" );
+    printf ( "%*s %*s\n", max_name_field_width, "name", max_count_field_width, "count" );
 
     for ( int i = 0; i < max_name_field_width + 1 + max_count_field_width; i ++ )
     {
