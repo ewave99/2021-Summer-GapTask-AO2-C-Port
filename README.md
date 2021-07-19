@@ -1,5 +1,8 @@
 # 2021 Summer Gap Task AO2 - C Port
 
+This is an experiment I am doing with my original project in an effort to try 
+to teach myself C.
+
 Original: <https://github.com/ewave99/2021-Summer-GapTask-AO2>
 
 ## Differences from the original Python version:

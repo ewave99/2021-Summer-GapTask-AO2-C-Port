@@ -6,6 +6,7 @@
 #include "generic.h"
 #include "species.h"
 
+/* function declarations */
 void inputSpeciesData ( Species * species_data );
 static void inputSpeciesName ( Species * species_data, char * input_buffer );
 static int checkIfNameExists ( char * name, Species * species_data );
