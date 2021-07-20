@@ -8,7 +8,7 @@
 
 /* function declarations */
 void inputSpeciesData ( Species * species_data );
-void inputSpeciesName ( Species * species_data, char * input_buffer );
+void inputSpeciesName ( Species * species_data, char * input_buffer, char * ignore_exists );
 static int checkIfNameExists ( Species * species_data, char * name, char * ignore );
 void inputSpeciesCount ( char * input_buffer );
 
@@ -41,7 +41,7 @@ inputSpeciesData ( Species * species_data )
     // input species name (pass pointer to species array so we can check if
     // a name already exists).
     // 2021-06-08: for some reason this functionality isn't working
-    inputSpeciesName ( species_data, input_buffer );
+    inputSpeciesName ( species_data, input_buffer, "" );
 
     // input until user leaves the input blank
     while ( strcmp ( input_buffer, "" ) != 0 && index < 16 )
@@ -69,7 +69,7 @@ inputSpeciesData ( Species * species_data )
             {
                 puts ( "" );
 
-                inputSpeciesName ( species_data, input_buffer );
+                inputSpeciesName ( species_data, input_buffer, "" );
             }
             else
             {
@@ -92,7 +92,7 @@ inputSpeciesData ( Species * species_data )
 }
 
 void
-inputSpeciesName ( Species * species_data, char * input_buffer )
+inputSpeciesName ( Species * species_data, char * input_buffer, char * ignore_exists )
 {
     int name_exists;
 
@@ -102,7 +102,7 @@ inputSpeciesName ( Species * species_data, char * input_buffer )
 
     input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
 
-    name_exists = checkIfNameExists ( species_data, input_buffer, "" );
+    name_exists = checkIfNameExists ( species_data, input_buffer, ignore_exists );
 
     // we need to check if the value is "" to be able to determine whether
     // to terminate the data-inputting process in the function
@@ -117,7 +117,7 @@ inputSpeciesName ( Species * species_data, char * input_buffer )
 
         input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
 
-        name_exists = checkIfNameExists ( species_data, input_buffer, "" );
+        name_exists = checkIfNameExists ( species_data, input_buffer, ignore_exists );
     }
 }
 

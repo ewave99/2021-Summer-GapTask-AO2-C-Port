@@ -6,7 +6,7 @@
 #include <string.h>
 
 void pickAndEditRecord ( Species * species_data );
-void inputSpeciesName ( Species * species_data, char * input_buffer );
+void inputSpeciesName ( Species * species_data, char * input_buffer, char * ignore_exists );
 void inputSpeciesCount ( char * input_buffer );
 
 void pickAndEditRecord ( Species * species_data )
@@ -83,7 +83,7 @@ void pickAndEditRecord ( Species * species_data )
     {
         printf ( "Current name: %s\n", record_ptr -> name );
 
-        inputSpeciesName ( species_data, input_buffer );
+        inputSpeciesName ( species_data, input_buffer, record_ptr -> name );
 
         strcpy ( record_ptr -> name, input_buffer );
     }
