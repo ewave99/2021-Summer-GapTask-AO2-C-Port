@@ -4,7 +4,9 @@
 #include <string.h>
 
 #include "generic.h"
-#include "menu.h"
+#include "species.h"
+
+int mainMenu ( Species * species_data );
 
 int
 main ()

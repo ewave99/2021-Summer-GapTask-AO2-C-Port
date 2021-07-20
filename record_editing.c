@@ -9,6 +9,7 @@ void pickAndEditRecord ( Species * species_data );
 void inputSpeciesName ( Species * species_data, char * input_buffer, char * ignore_exists );
 void inputSpeciesCount ( char * input_buffer );
 void pickAndDeleteRecord ( Species * species_data );
+void clearCurrentRecords ( Species * species_data );
 
 void
 pickAndEditRecord ( Species * species_data )
@@ -75,7 +76,12 @@ pickAndEditRecord ( Species * species_data )
     /* abort if the user does not enter "y" or "Y" */
     if ( strcmp ( input_buffer, "y" ) != 0 &&
          strcmp ( input_buffer, "Y" ) != 0 )
+    {
+        puts ( "Aborted." );
+        puts ( "" );
+
         return;
+    }
 
     puts ( "" );
 
@@ -181,7 +187,12 @@ pickAndDeleteRecord ( Species * species_data )
     /* abort if the user does not enter "y" or "Y" */
     if ( strcmp ( input_buffer, "y" ) != 0 &&
          strcmp ( input_buffer, "Y" ) != 0 )
+    {
+        puts ( "Aborted." );
+        puts ( "" );
+
         return;
+    }
 
     puts ( "" );
 
@@ -199,4 +210,65 @@ pickAndDeleteRecord ( Species * species_data )
     /* set record fields to 0, in effect making it invisible */
     strcpy ( record_ptr -> name, "" );
     record_ptr -> count = 0;
+}
+
+void
+clearCurrentRecords ( Species * species_data )
+{
+    Species * record_ptr;
+    int i;
+
+    char input_buffer [ INPUT_LENGTH_LIMIT ];
+
+    puts ( "CLEARING ALL RECORDS:" );
+
+    record_ptr = species_data;
+    i = 0;
+
+    while ( strcmp ( record_ptr -> name, "" ) != 0 )
+    {
+        record_ptr ++;
+        i ++;
+    }
+
+    /* if i hasn't changed then there are no records to delete */
+    if ( i == 0 )
+    {
+        puts ( "No records to delete." );
+        puts ( "" );
+
+        return;
+    }
+    
+    printf ( "Are you sure [y/n]: " );
+    
+    fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
+    input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
+
+    /* abort if the user does not enter "y" or "Y" */
+    if ( strcmp ( input_buffer, "y" ) != 0 &&
+         strcmp ( input_buffer, "Y" ) != 0 )
+    {
+        puts ( "Aborted." );
+        puts ( "" );
+
+        return;
+    }
+
+    /* walk through all the records and make each one blank */
+    record_ptr = species_data;
+
+    while ( strcmp ( record_ptr -> name, "" ) != 0 )
+    {
+        /* this will not affect the expression evaluation at the top of the
+         * while loop since we change the record and *then* move forwards. */
+        strcpy ( record_ptr -> name, "" );
+        record_ptr -> count = 0;
+
+        record_ptr ++;
+    }
+    
+    puts ( "Cleared all current records." );
+
+    puts ( "" );
 }
