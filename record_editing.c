@@ -8,8 +8,10 @@
 void pickAndEditRecord ( Species * species_data );
 void inputSpeciesName ( Species * species_data, char * input_buffer, char * ignore_exists );
 void inputSpeciesCount ( char * input_buffer );
+void pickAndDeleteRecord ( Species * species_data );
 
-void pickAndEditRecord ( Species * species_data )
+void
+pickAndEditRecord ( Species * species_data )
 {
     Species * record_ptr;
     
@@ -48,7 +50,7 @@ void pickAndEditRecord ( Species * species_data )
     /* if i has changed by one then there is 1 record to edit. */
     else if ( i == 2 )
     {
-        chosen_record = 0;
+        chosen_record = 1;
 
         puts ( "Only one record to edit." );
     }
@@ -58,7 +60,14 @@ void pickAndEditRecord ( Species * species_data )
         chosen_record = getNumericChoice ( i - 1, "Enter number of chosen record: ", "Invalid option." );
     }
 
-    printf ( "Do you want to edit this record [y/n]: " );
+    if ( chosen_record == 1 )
+    {
+        printf ( "Do you want to edit this record [y/n]: " );
+    }
+    else
+    {
+        printf ( "Are you sure you want to edit this record [y/n]: " );
+    }
     
     fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
     input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
@@ -107,4 +116,87 @@ void pickAndEditRecord ( Species * species_data )
     }
 
     puts ( "" );
+}
+
+void
+pickAndDeleteRecord ( Species * species_data )
+{
+    Species * record_ptr;
+    
+    int i;
+    int chosen_record;
+
+    char input_buffer [ INPUT_LENGTH_LIMIT ];
+
+    puts ( "DELETE RECORD:" );
+
+    /* fast-forward through species data to find the index of the first empty
+     * record, printing out the record fields along the way */
+    record_ptr = species_data;
+    i = 1;
+
+    if ( strcmp ( record_ptr -> name, "" ) != 0 )
+        puts ( "" );
+
+    while ( strcmp ( record_ptr -> name, "" ) != 0 )
+    {
+        printf ( "(%d) %s, %d\n", i, record_ptr -> name, record_ptr -> count );
+        record_ptr ++;
+        i ++;
+    }
+
+    /* if i hasn't changed then there are no records to delete */
+    if ( i == 1 )
+    {
+        puts ( "No records to delete." );
+        puts ( "" );
+
+        return;
+    }
+    /* if i has changed by one then there is 1 record to delete. */
+    else if ( i == 2 )
+    {
+        chosen_record = 1;
+
+        puts ( "Only one record to delete." );
+    }
+    else
+    {
+        puts ( "" );
+        chosen_record = getNumericChoice ( i - 1, "Enter number of chosen record: ", "Invalid option." );
+    }
+
+    if ( chosen_record == 1 )
+    {
+        printf ( "Do you want to delete this record [y/n]: " );
+    }
+    else
+    {
+        printf ( "Are you sure you want to delete this record [y/n]: " );
+    }
+    
+    fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
+    input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
+
+    /* abort if the user does not enter "y" or "Y" */
+    if ( strcmp ( input_buffer, "y" ) != 0 &&
+         strcmp ( input_buffer, "Y" ) != 0 )
+        return;
+
+    puts ( "" );
+
+    record_ptr = species_data;
+    /* index is offset by 1, but this still gets us to the right record */
+    i = 1;
+
+    /* fast forward to the chosen record */
+    while ( i < chosen_record && strcmp ( record_ptr -> name, "" ) != 0 )
+    {
+        record_ptr ++;
+        i ++;
+    }
+
+    /* set record fields to 0, in effect making it invisible */
+    strcpy ( record_ptr -> name, "" );
+    record_ptr -> count = 0;
 }
