@@ -10,8 +10,8 @@ void displaySpeciesDataAsTable ();
 void displaySpeciesDataAsBarChart ();
 */
 void inputSpeciesData ( Species * species_data );
-/*
 void pickAndEditRecord ();
+/*
 void pickAndDeleteRecord ();
 void sortRecords ();
 void clearCurrentRecords ();

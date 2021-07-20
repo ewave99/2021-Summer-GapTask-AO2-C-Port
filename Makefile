@@ -3,7 +3,8 @@ SRC = \
 	  generic.c \
 	  menu.c \
 	  data_input.c \
-	  data_output.c
+	  data_output.c \
+	  record_editing.c
 
 OBJ = ${SRC:.c=.o}
 

@@ -8,9 +8,9 @@
 
 /* function declarations */
 void inputSpeciesData ( Species * species_data );
-static void inputSpeciesName ( Species * species_data, char * input_buffer );
-static int checkIfNameExists ( char * name, Species * species_data );
-static void inputSpeciesCount ( char * input_buffer );
+void inputSpeciesName ( Species * species_data, char * input_buffer );
+static int checkIfNameExists ( Species * species_data, char * name, char * ignore );
+void inputSpeciesCount ( char * input_buffer );
 
 void
 inputSpeciesData ( Species * species_data )
@@ -91,7 +91,7 @@ inputSpeciesData ( Species * species_data )
     puts ( "" );
 }
 
-static void
+void
 inputSpeciesName ( Species * species_data, char * input_buffer )
 {
     int name_exists;
@@ -102,7 +102,7 @@ inputSpeciesName ( Species * species_data, char * input_buffer )
 
     input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
 
-    name_exists = checkIfNameExists ( input_buffer, species_data );
+    name_exists = checkIfNameExists ( species_data, input_buffer, "" );
 
     // we need to check if the value is "" to be able to determine whether
     // to terminate the data-inputting process in the function
@@ -117,13 +117,13 @@ inputSpeciesName ( Species * species_data, char * input_buffer )
 
         input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
 
-        name_exists = checkIfNameExists ( input_buffer, species_data );
+        name_exists = checkIfNameExists ( species_data, input_buffer, "" );
     }
 }
 
 // 0 for does not exist; 1 for does exist
 static int
-checkIfNameExists ( char * name, Species * species_data )
+checkIfNameExists ( Species * species_data, char * name, char * ignore )
 {
     int name_exists;
 
@@ -140,7 +140,7 @@ checkIfNameExists ( char * name, Species * species_data )
     while ( name_exists == 0 && strcmp ( species_data_ptr -> name, "" ) != 0 )
     {
         // if the names are equal
-        if ( strcmp ( name, species_data_ptr -> name ) == 0 )
+        if ( strcmp ( name, species_data_ptr -> name ) == 0 && strcmp ( species_data_ptr -> name, ignore ) != 0 )
         {
             name_exists = 1;
         }
@@ -156,7 +156,7 @@ checkIfNameExists ( char * name, Species * species_data )
     return 0;
 }
 
-static void
+void
 inputSpeciesCount ( char * input_buffer )
 {
     printf ( "Enter specimen count: " );
