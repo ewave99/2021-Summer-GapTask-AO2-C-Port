@@ -58,6 +58,16 @@ void pickAndEditRecord ( Species * species_data )
         chosen_record = getNumericChoice ( i - 1, "Enter number of chosen record: ", "Invalid option." );
     }
 
+    printf ( "Do you want to edit this record [y/n]: " );
+    
+    fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
+    input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
+
+    /* abort if the user does not enter "y" or "Y" */
+    if ( strcmp ( input_buffer, "y" ) != 0 &&
+         strcmp ( input_buffer, "Y" ) != 0 )
+        return;
+
     puts ( "" );
 
     record_ptr = species_data;
