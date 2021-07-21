@@ -16,6 +16,7 @@ void inputSpeciesData ( Species * species_data );
 void displaySpeciesDataAsTable ( Species * species_data );
 void pickAndEditRecord ( Species * species_data );
 void pickAndDeleteRecord ( Species * species_data );
+void sortRecords ( Species * species_data );
 void clearCurrentRecords ( Species * species_data );
 
 int
@@ -91,11 +92,9 @@ doChosenAction ( int main_menu_choice, Species * species_data )
         case 5:
             pickAndDeleteRecord ( species_data );
             break;
-        /*
         case 6:
-            sortRecords ();
+            sortRecords ( species_data );
             break;
-        */
         case 7:
             clearCurrentRecords ( species_data );
             break;
