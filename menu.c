@@ -18,6 +18,7 @@ void pickAndEditRecord ( Species * species_data );
 void pickAndDeleteRecord ( Species * species_data );
 void sortRecords ( Species * species_data );
 void clearCurrentRecords ( Species * species_data );
+void loadDataFromCSV ( Species * species_data );
 
 int
 mainMenu ( Species * species_data )
@@ -102,10 +103,10 @@ doChosenAction ( int main_menu_choice, Species * species_data )
         case 8:
             saveAsCSV ();
             break;
-        case 9:
-            loadDataFromCSV ();
-            break;
         */
+        case 9:
+            loadDataFromCSV ( species_data );
+            break;
         default:
             break;
     }

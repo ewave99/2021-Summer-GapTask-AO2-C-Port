@@ -5,7 +5,8 @@ SRC = \
 	  data_input.c \
 	  data_output.c \
 	  record_editing.c \
-	  sorting.c
+	  sorting.c \
+	  csv.c
 
 OBJ = ${SRC:.c=.o}
 
