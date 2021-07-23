@@ -167,7 +167,8 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
     /* while record index < 16 and we are not at the end of the file */
     while ( record_index < 16 && fgets_return_value != NULL )
     {
-        /* strip newline character */
+        /* strip newline character (take into account dos endings) */
+        line_buffer [ strcspn ( line_buffer, "\r" ) ] = 0;
         line_buffer [ strcspn ( line_buffer, "\n" ) ] = 0;
 
         /* point to first char in line */
@@ -196,11 +197,16 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
             /* increment field length */
             current_field_length ++;
         }
-        /* if a null character or a comma has not been reached */
-        if ( * ptr_to_char_in_line != ',' &&
-             * ptr_to_char_in_line != '\0' )
+        /* if a comma has not been reached */
+        if ( * ptr_to_char_in_line != ',' )
         {
             printf ( "Error: field 'name' is too long on line %d!", current_line_number );
+
+            return;
+        }
+        if ( * ptr_to_char_in_line == '\0' )
+        {
+            printf ( "Error: field 'count' is missing on line %d!", current_line_number );
 
             return;
         }
@@ -208,6 +214,9 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
         * ptr_to_char_in_current_field = '\0';
         /* copy current field content to the name of the record */
         strcpy ( record_ptr -> name, current_field );
+
+        /* increment the pointer so it is not pointing at the comma */
+        ptr_to_char_in_line ++;
 
         /* read in count field: */
 
@@ -226,7 +235,9 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
             /* if char is not numeric */
             if ( ! isdigit ( * ptr_to_char_in_line ) )
             {
-                puts ( "Error: 'count' field on line %d is an invalid number." );
+                printf ( "%c\n", * ptr_to_char_in_line );
+
+                printf ( "Error: 'count' field on line %d is an invalid number.", current_line_number );
 
                 return;
             }
