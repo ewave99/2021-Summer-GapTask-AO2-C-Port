@@ -1,11 +1,13 @@
+#include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "generic.h"
 #include "species.h"
 
 void loadDataFromCSV ( Species * species_data );
-static void parseCSVIntoStructs ( Species * species_data, int starting_record, int mode, FILE * file );
+static void parseCSVIntoStructs ( Species * species_data, int mode, FILE * file );
 
 void
 loadDataFromCSV ( Species * species_data )
@@ -28,7 +30,7 @@ loadDataFromCSV ( Species * species_data )
 
     if ( mode == 2 )
     {
-        puts ( "WARNING: all records currently in memory will be deleted." );
+        puts ( "WARNING: some, if not all, records currently in memory will be deleted." );
         printf ( "Are you sure [y/n]: " );
 
         fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
@@ -67,19 +69,26 @@ loadDataFromCSV ( Species * species_data )
         return;
     }
 
+    parseCSVIntoStructs ( species_data, mode, file );
+
     fclose ( file );
+
+    puts ( "LOADED DATA." );
+    puts ( "" );
 }
 
 static void
-parseCSVIntoStructs ( Species * species_data, int starting_record, int mode, FILE * file )
+parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
 {
     /*  Algorithm structure
+     *
+     *  fast forward to the starting record
      *  
      *  read in line
      *  strip newline character
      *  point to first char in line
      *  while record index < 16 and we are not at the end of the file 
-     *      [read in name field]
+     *      [read in name field:]
      *      reset current field content to blank
      *      reset current field length to 0
      *      while char is not ',' and char is not '\0' and current_field_length < INPUT_LENGTH_LIMIT
@@ -107,6 +116,9 @@ parseCSVIntoStructs ( Species * species_data, int starting_record, int mode, FIL
      *      append a '\0' to the current field content
      *      record -> count = atoi ( current field content )
      *
+     *      increment record pointer
+     *      increment record index
+     *
      *      read in line
      *      strip newline character
      *      point to first char in line
@@ -115,86 +127,154 @@ parseCSVIntoStructs ( Species * species_data, int starting_record, int mode, FIL
      *      */
 
     Species * record_ptr;
-
     int record_index;
+    
+    int current_line_number;
+    char line_buffer [ INPUT_LENGTH_LIMIT ];
+    char * fgets_return_value;
+    char * ptr_to_char_in_line;
 
-    char buffer [ INPUT_LENGTH_LIMIT ];
+    char current_field [ INPUT_LENGTH_LIMIT ];
+    int current_field_length;
 
-    char * buffer_ptr;
-    int buffer_index;
-
-    int buffer_length;
-
-    char * field_ptr;
-    int field_index;
+    char * ptr_to_char_in_current_field;
 
     record_ptr = species_data;
     record_index = 0;
 
-    /* fast forward to the chosen starting point */
-    while ( record_index < starting_record && record_index < 16 )
+    /* if the user has chosen to append to the data */
+    if ( mode == 1 )
     {
-        record_ptr ++;
-        record_index ++;
+        /* fast forward to first blank record */
+        while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < 16 )
+        {
+            record_ptr ++;
+            record_index ++;
+        }
     }
 
-    /* set up initial values for the boolean expression at the top of the
-     * while loop */
-    if ( record_index < 16 )
+    current_line_number = 0;
+
+    /* read in line buffer */
+    fgets_return_value = fgets ( line_buffer, INPUT_LENGTH_LIMIT, file );
+
+    if ( fgets_return_value == NULL )
     {
-        fgets ( buffer, INPUT_LENGTH_LIMIT, stdin );
-        buffer [ strcspn ( buffer, "\n" ) ] = 0;
+        puts ( "Error: file is empty." );
+        return;
     }
 
-    /* loop until end of file is reached */
-    while ( record_index < 16 && strlen ( buffer ) != 0 )
+    /* while record index < 16 and we are not at the end of the file */
+    while ( record_index < 16 && fgets_return_value != NULL )
     {
-        /* read in name field */
-        field_ptr = record_ptr -> name;
-        field_index = 0;
+        /* strip newline character */
+        line_buffer [ strcspn ( line_buffer, "\n" ) ] = 0;
 
-        /* point to the start of the current line */
-        buffer_ptr = buffer;
-        buffer_index = 0;
+        /* point to first char in line */
+        ptr_to_char_in_line = line_buffer;
 
-        /* store the length of the line for convenience */
-        buffer_length = strlen ( buffer );
+        /* read in name field: */
 
-        /* read in characters until we reach a comma */
-        while ( * buffer_ptr != '\0' &&
-                buffer_index < INPUT_LENGTH_LIMIT &&
-                * buffer_ptr != ',' &&
-                field_index < INPUT_LENGTH_LIMIT )
+        /* reset current field content to blank */
+        strcpy ( current_field, "" );
+        current_field_length = 0;
+
+        /* point to first char in current field */
+        ptr_to_char_in_current_field = current_field;
+
+        /* while char is not ',' and char is not '\0' and current_field_length < INPUT_LENGTH_LIMIT */
+        while ( * ptr_to_char_in_line != ',' &&
+                * ptr_to_char_in_line != '\0' &&
+                current_field_length < INPUT_LENGTH_LIMIT )
         {
-            buffer_ptr ++;
-            buffer_index ++;
-
-            field_ptr ++;
-            field_index ++;
+            /* add char to current field content */
+            * ptr_to_char_in_current_field = * ptr_to_char_in_line;
+            /* increment pointer to point at next char in line */
+            ptr_to_char_in_line ++;
+            /* point to next char in field */
+            ptr_to_char_in_current_field ++;
+            /* increment field length */
+            current_field_length ++;
         }
-
-        /* point to the start of the current line */
-        buffer_ptr = buffer;
-        buffer_index = 0;
-
-        /* store the length of the line for convenience */
-        buffer_length = strlen ( buffer );
-
-        /* loop through all the characters in the line */
-        while ( * buffer_ptr != '\0' && buffer_index < INPUT_LENGTH_LIMIT )
+        /* if a null character or a comma has not been reached */
+        if ( * ptr_to_char_in_line != ',' &&
+             * ptr_to_char_in_line != '\0' )
         {
-            buffer_ptr ++;
-            buffer_index ++;
-        }
+            printf ( "Error: field 'name' is too long on line %d!", current_line_number );
 
-        /* point to the next record */
+            return;
+        }
+        /* add a null character to the end of the field */
+        * ptr_to_char_in_current_field = '\0';
+        /* copy current field content to the name of the record */
+        strcpy ( record_ptr -> name, current_field );
+
+        /* read in count field: */
+
+        /* reset current field content to blank */
+        strcpy ( current_field, "" );
+        current_field_length = 0;
+
+        /* point to first char in current field */
+        ptr_to_char_in_current_field = current_field;
+
+        /* while char is not ',' and char is not '\0' and current_field_length < 9 */
+        while ( * ptr_to_char_in_line != ',' &&
+                * ptr_to_char_in_line != '\0' &&
+                current_field_length < 9 )
+        {
+            /* if char is not numeric */
+            if ( ! isdigit ( * ptr_to_char_in_line ) )
+            {
+                puts ( "Error: 'count' field on line %d is an invalid number." );
+
+                return;
+            }
+
+            /* add char to current field content */
+            * ptr_to_char_in_current_field = * ptr_to_char_in_line;
+            /* increment pointer to point at next char in line */
+            ptr_to_char_in_line ++;
+            /* point to next char in field */
+            ptr_to_char_in_current_field ++;
+            /* increment field length */
+            current_field_length ++;
+        }
+        if ( * ptr_to_char_in_line != ',' &&
+             * ptr_to_char_in_line != '\0' )
+        {
+            printf ( "Error: field 'count' on line %d is too large to store!", current_line_number );
+
+            return;
+        }
+        * ptr_to_char_in_current_field = '\0';
+        record_ptr -> count = atoi ( current_field );
+
         record_ptr ++;
         record_index ++;
 
-        if ( record_index < 16 )
+        current_line_number ++;
+        fgets_return_value = fgets ( line_buffer, INPUT_LENGTH_LIMIT, file );
+    }
+
+    if ( record_index >= 16 && fgets_return_value != NULL )
+    {
+        puts ( "All records filled, no space for more data." );
+        
+        return;
+    }
+
+    /* if the user has chosen to overwrite the data */
+    if ( mode == 2 )
+    {
+        /* blankify the remaining records */
+        while ( record_index < 16 )
         {
-            fgets ( buffer, INPUT_LENGTH_LIMIT, stdin );
-            buffer [ strcspn ( buffer, "\n" ) ] = 0;
+            strcpy ( record_ptr -> name, "" );
+            record_ptr -> count = 0;
+
+            record_ptr ++;
+            record_index ++;
         }
     }
 }
