@@ -14,3 +14,7 @@ Original: <https://github.com/ewave99/2021-Summer-GapTask-AO2>
 ## To do
 
 - Create a branch to experiment with using a linked-list implementation of the list of Species records
+
+## Bugs
+
+- *2021-07-24*: if you delete a record, all the records that come after it become invisible since, when displaying the records, the program stops at the first blank record. We can fix this: (1) pick a record to be deleted. (2) For each record that comes after it, copy that record into the place to the left. (3) blank the trailing record at end since there will be duplicate records after copying the last one.
