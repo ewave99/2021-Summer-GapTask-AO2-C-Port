@@ -9,6 +9,8 @@
 void loadDataFromCSV ( Species * species_data );
 static void parseCSVIntoStructs ( Species * species_data, int mode, FILE * file );
 
+void saveAsCSV ( Species * species_data );
+
 void
 loadDataFromCSV ( Species * species_data )
 {
@@ -80,52 +82,6 @@ loadDataFromCSV ( Species * species_data )
 static void
 parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
 {
-    /*  Algorithm structure
-     *
-     *  fast forward to the starting record
-     *  
-     *  read in line
-     *  strip newline character
-     *  point to first char in line
-     *  while record index < 16 and we are not at the end of the file 
-     *      [read in name field:]
-     *      reset current field content to blank
-     *      reset current field length to 0
-     *      while char is not ',' and char is not '\0' and current_field_length < INPUT_LENGTH_LIMIT
-     *          append char to current field content
-     *          increment pointer to point at next char in line
-     *          increment current field length
-     *      [when we reach a ',' or '\0']
-     *      append a '\0' to the current field content
-     *      record -> name = current field content
-     *
-     *      [read in count field]
-     *      reset current field content to blank
-     *      reset current field length to 0
-     *      while char is not ',' and char is not '\0' and current field length < INPUT_LENGTH_LIMIT
-     *          if char is not numeric
-     *              there is an error: count field '<count field>' is an invalid number
-     *              return from function 
-     *          if current field length >= 9
-     *              error: number '<count field>' is too long to store
-     *              return from function
-     *          append char to current field content
-     *          increment pointer to point at next char in line
-     *          increment current field length
-     *      [when we reach a ',' or '\0']
-     *      append a '\0' to the current field content
-     *      record -> count = atoi ( current field content )
-     *
-     *      increment record pointer
-     *      increment record index
-     *
-     *      read in line
-     *      strip newline character
-     *      point to first char in line
-     *
-     *  print 'All records filled.'
-     *      */
-
     Species * record_ptr;
     int record_index;
     
@@ -200,13 +156,13 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
         /* if a comma has not been reached */
         if ( * ptr_to_char_in_line != ',' )
         {
-            printf ( "Error: field 'name' is too long on line %d!", current_line_number );
+            printf ( "Error: field 'name' is too long on line %d!\n", current_line_number );
 
             return;
         }
         if ( * ptr_to_char_in_line == '\0' )
         {
-            printf ( "Error: field 'count' is missing on line %d!", current_line_number );
+            printf ( "Error: field 'count' is missing on line %d!\n", current_line_number );
 
             return;
         }
@@ -237,7 +193,7 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
             {
                 printf ( "%c\n", * ptr_to_char_in_line );
 
-                printf ( "Error: 'count' field on line %d is an invalid number.", current_line_number );
+                printf ( "Error: 'count' field on line %d is an invalid number.\n", current_line_number );
 
                 return;
             }
@@ -254,7 +210,7 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
         if ( * ptr_to_char_in_line != ',' &&
              * ptr_to_char_in_line != '\0' )
         {
-            printf ( "Error: field 'count' on line %d is too large to store!", current_line_number );
+            printf ( "Error: field 'count' on line %d is too large to store!\n", current_line_number );
 
             return;
         }
@@ -288,4 +244,56 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
             record_index ++;
         }
     }
+}
+
+void
+saveAsCSV ( Species * species_data )
+{
+    Species * record_ptr;
+    int record_index;
+
+    char input_buffer [ INPUT_LENGTH_LIMIT ];
+
+    FILE * file;
+
+    puts ( "SAVE AS CSV:" );
+
+    printf ( "Enter name to save to: " );
+    fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
+    input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
+
+    while ( strcmp ( input_buffer, "" ) == 0 )
+    {
+        puts ( "Error: filename cannot be blank." );
+
+        printf ( "Enter name to save to: " );
+        fgets ( input_buffer, INPUT_LENGTH_LIMIT, stdin );
+        input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
+    }
+
+    file = fopen ( input_buffer, "w" );
+
+    record_ptr = species_data;
+    record_index = 0;
+
+    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < 16 )
+    {
+        fprintf ( file, "%s,%d\n", record_ptr -> name, record_ptr -> count );
+
+        record_ptr ++;
+        record_index ++;
+    }
+
+    if ( record_index == 0 )
+    {
+        puts ( "No species data to save." );
+        puts ( "" );
+        
+        return;
+    }
+
+    fclose ( file );
+
+    puts ( "SAVED." );
+    puts ( "" );
 }
