@@ -129,22 +129,80 @@ displaySpeciesDataAsBarChart ( Species * species_data )
         return;
     }
 
+    /* we shall make the limit for the bar chart the next multiple of 5 */
+    //if ( max_count % 5 != 0 )
+    //{
+    //    max_count += 5 - max_count % 5;
+    //}
+
     /* get the dimensions of the terminal and store it in 'dimensions' */
     ioctl ( 0, TIOCGWINSZ, & dimensions );
 
     /* limit the width of the bar chart to 80 */
-    dimensions.ws_col = ( dimensions.ws_col > 80 ) ? 80 : dimensions.ws_col;
+    //dimensions.ws_col = ( dimensions.ws_col > 80 ) ? 80 : dimensions.ws_col;
 
     /* account for the ' |' after the species name and the '|' right at the end */
     max_bar_length = dimensions.ws_col - max_name_field_width - 3;
 
-    /* find the number of characters needed to draw a bar of unit value 1 */
-    int chars_per_unit = 1 * max_bar_length / max_count;
+    /* find/decide the numeric interval (not the physical number of chars)
+     * between the numbers on the scale */
+    int numeric_interval = 1;
+    int chars_between_intervals = numeric_interval * max_bar_length / max_count;
 
-    /* find the numeric interval (not the physical number of chars) between
-     * the numbers on the scale */
-
+    while ( numeric_interval <= max_count &&
+            chars_between_intervals < 10 )
+    {
+        switch ( numeric_interval )
+        {
+            case 1:
+                numeric_interval = 2;
+                break;
+            case 2:
+                numeric_interval = 4;
+                break;
+            default:
+                if ( numeric_interval % 5 == 0 )
+                {
+                    numeric_interval += 4 - numeric_interval % 4;
+                }
+                else if ( numeric_interval % 4 == 0 )
+                {
+                    numeric_interval += 5 - numeric_interval % 5;
+                }
+                break;
+        }
+        if ( max_count % numeric_interval != 0 )
+        {
+            max_count += numeric_interval - max_count % numeric_interval;
+        }
+        chars_between_intervals = numeric_interval * max_bar_length / max_count;
+    }
+    
+    int number_of_intervals = max_count / numeric_interval;
+     
     /* draw header */
+    int old_imaginary_bar_length;
+
+    int current_interval_number = 0;
+    int current_imaginary_bar_length = 0;
+    int next_amount_of_chars_to_draw = 0;
+
+    printf ( "%*s0|", max_name_field_width, "" );
+
+    old_imaginary_bar_length = current_imaginary_bar_length;
+
+    for ( int i = 0; i < number_of_intervals; i ++ )
+    {
+        current_interval_number += numeric_interval;
+        current_imaginary_bar_length = current_interval_number * max_bar_length / max_count;
+        next_amount_of_chars_to_draw = current_imaginary_bar_length - old_imaginary_bar_length;
+
+        printf ( "%*d|", next_amount_of_chars_to_draw - 1, current_interval_number );
+
+        old_imaginary_bar_length = current_imaginary_bar_length;
+    }
+
+    printf ( "\n" );
 
     /* go through the records and print the name + ' |' + a suitably sized bar. */
     record_ptr = species_data;
@@ -168,8 +226,8 @@ displaySpeciesDataAsBarChart ( Species * species_data )
 
             i ++;
         }
-        /* print the right border of the bar chart */
-        printf ( "*%*s|\n", max_bar_length - current_bar_length, "" );
+
+        printf ( "*\n" );
 
         record_ptr ++;
         record_index ++;
