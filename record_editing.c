@@ -207,9 +207,23 @@ pickAndDeleteRecord ( Species * species_data )
         i ++;
     }
 
-    /* set record fields to 0, in effect making it invisible */
+    Species * record_ptr_last;
+
+    /* for each record that comes after the chosed record, copy its contents
+     * into the record to the left of it. */
+    while ( i < 15 )
+    {
+        record_ptr_last = record_ptr;
+
+        record_ptr ++;
+        i ++;
+
+        strcpy ( record_ptr_last -> name, record_ptr -> name );
+        record_ptr_last -> count = record_ptr -> count;
+    }
+
+    /* nullify the last record */
     strcpy ( record_ptr -> name, "" );
-    record_ptr -> count = 0;
 }
 
 void
@@ -255,18 +269,9 @@ clearCurrentRecords ( Species * species_data )
         return;
     }
 
-    /* walk through all the records and make each one blank */
-    record_ptr = species_data;
-
-    while ( strcmp ( record_ptr -> name, "" ) != 0 )
-    {
-        /* this will not affect the expression evaluation at the top of the
-         * while loop since we change the record and *then* move forwards. */
-        strcpy ( record_ptr -> name, "" );
-        record_ptr -> count = 0;
-
-        record_ptr ++;
-    }
+    /* take advantage of the fact that the program doesn't 'see' all the records
+     * that come after a record whose name is null, */
+    strcpy ( record_ptr -> name, "" );
     
     puts ( "Cleared all current records." );
 
