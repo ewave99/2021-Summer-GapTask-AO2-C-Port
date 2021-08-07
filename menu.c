@@ -20,6 +20,7 @@ void sortRecords ( Species * species_data );
 void clearCurrentRecords ( Species * species_data );
 void loadDataFromCSV ( Species * species_data );
 void saveAsCSV ( Species * species_data );
+void displaySpeciesDataAsBarChart ( Species * species_data );
 
 int
 mainMenu ( Species * species_data )
@@ -80,11 +81,9 @@ doChosenAction ( int main_menu_choice, Species * species_data )
         case 1:
             displaySpeciesDataAsTable ( species_data );
             break;
-        /*
         case 2:
-            displaySpeciesDataAsBarChart ();
+            displaySpeciesDataAsBarChart ( species_data );
             break;
-        */
         case 3:
             inputSpeciesData ( species_data );
             break;
