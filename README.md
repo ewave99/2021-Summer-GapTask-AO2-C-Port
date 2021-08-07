@@ -10,6 +10,8 @@ Original: <https://github.com/ewave99/2021-Summer-GapTask-AO2>
 - No validation for the input of the species name
 - Names are case-sensitive when checking whether they already exist
 - Text is right-aligned in table cells
+- The Python version is programmed in an object-oriented fashion, which is
+  not possible in C. So the C is programmed in a procedural fashion.
 
 ## To do
 
