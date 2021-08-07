@@ -269,8 +269,11 @@ clearCurrentRecords ( Species * species_data )
         return;
     }
 
+
     /* take advantage of the fact that the program doesn't 'see' all the records
      * that come after a record whose name is null, */
+    record_ptr = species_data;
+
     strcpy ( record_ptr -> name, "" );
     
     puts ( "Cleared all current records." );
