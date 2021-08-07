@@ -17,4 +17,4 @@ Original: <https://github.com/ewave99/2021-Summer-GapTask-AO2>
 
 ## Bugs
 
-***None at present***
+*None at present*
