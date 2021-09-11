@@ -4,10 +4,10 @@
 
 #include "species.h"
 
-void displaySpeciesDataAsTable ( Species * species_data );
-void displaySpeciesDataAsBarChart ( Species * species_data );
+void displaySpeciesDataAsTable ( SpeciesData * species_data );
+void displaySpeciesDataAsBarChart ( SpeciesData * species_data );
 
-void displaySpeciesDataAsTable ( Species * species_data )
+void displaySpeciesDataAsTable ( SpeciesData * species_data )
 {
     Species * record_ptr;
     int record_index;
@@ -23,7 +23,7 @@ void displaySpeciesDataAsTable ( Species * species_data )
     char current_count_field [ COUNT_STR_LENGTH_LIMIT ];
 
     /* find max string length for each field */
-    record_ptr = species_data;
+    record_ptr = species_data -> records;
     record_index = 0;
 
     /* length of string "name" is the minimum */
@@ -33,7 +33,7 @@ void displaySpeciesDataAsTable ( Species * species_data )
     max_count_field_width = 5;
 
     /* while the name field is not empty */
-    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < 16 )
+    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
     {
         current_name_field_width = strlen ( record_ptr -> name );
 
@@ -64,7 +64,7 @@ void displaySpeciesDataAsTable ( Species * species_data )
     /* print values */
 
     /* reset record pointer */
-    record_ptr = species_data;
+    record_ptr = species_data -> records;
 
     while ( strcmp ( record_ptr -> name, "" ) != 0 )
     {
@@ -78,7 +78,7 @@ void displaySpeciesDataAsTable ( Species * species_data )
 }
 
 void
-displaySpeciesDataAsBarChart ( Species * species_data )
+displaySpeciesDataAsBarChart ( SpeciesData * species_data )
 {
     Species * record_ptr;
     int record_index;
@@ -100,14 +100,14 @@ displaySpeciesDataAsBarChart ( Species * species_data )
     /* find the maximum width amongst all the species names */
     /* and find the maximum count */
 
-    record_ptr = species_data;
+    record_ptr = species_data -> records;
     record_index = 0;
 
     max_name_field_width = 0;
     max_count = 0;
 
     /* while the name field is not empty */
-    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < 16 )
+    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
     {
         current_name_field_width = strlen ( record_ptr -> name );
 
@@ -126,6 +126,27 @@ displaySpeciesDataAsBarChart ( Species * species_data )
         puts ( "No records to display." );
         puts ( "" );
         
+        return;
+    }
+
+    if ( max_count == 0 )
+    {
+        /* go through the records and print the name + ' |' */
+        record_ptr = species_data -> records;
+        record_index = 0;
+
+        /* repeat until we get to an empty record */
+        while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
+        {
+            /* print the species name, padded to fit the maximum width */
+            printf ( "%*s |\n", max_name_field_width, record_ptr -> name );
+
+            record_ptr ++;
+            record_index ++;
+        }
+
+        puts ( "" );
+
         return;
     }
 
@@ -191,7 +212,7 @@ displaySpeciesDataAsBarChart ( Species * species_data )
 
     old_imaginary_bar_length = current_imaginary_bar_length;
 
-    for ( int i = 0; i < number_of_intervals; i ++ )
+    for ( i = 0; i < number_of_intervals; i ++ )
     {
         current_interval_number += numeric_interval;
         current_imaginary_bar_length = current_interval_number * max_bar_length / max_count;
@@ -205,11 +226,11 @@ displaySpeciesDataAsBarChart ( Species * species_data )
     printf ( "\n" );
 
     /* go through the records and print the name + ' |' + a suitably sized bar. */
-    record_ptr = species_data;
+    record_ptr = species_data -> records;
     record_index = 0;
 
     /* repeat until we get to an empty record */
-    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < 16 )
+    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
     {
         /* print the species name, padded to fit the maximum width */
         printf ( "%*s |", max_name_field_width, record_ptr -> name );

@@ -7,23 +7,23 @@
 #include "species.h"
 
 /* function declarations */
-int mainMenu ( Species * species_data );
+int mainMenu ( SpeciesData * species_data );
 static void displayMainMenu ();
-static void doChosenAction ( int main_menu_choice, Species * species_data );
+static void doChosenAction ( int main_menu_choice, SpeciesData * species_data );
 static int confirmQuit ();
 
-void inputSpeciesData ( Species * species_data );
-void displaySpeciesDataAsTable ( Species * species_data );
-void pickAndEditRecord ( Species * species_data );
-void pickAndDeleteRecord ( Species * species_data );
-void sortRecords ( Species * species_data );
-void clearCurrentRecords ( Species * species_data );
-void loadDataFromCSV ( Species * species_data );
-void saveAsCSV ( Species * species_data );
-void displaySpeciesDataAsBarChart ( Species * species_data );
+void inputSpeciesData ( SpeciesData * species_data );
+void displaySpeciesDataAsTable ( SpeciesData * species_data );
+void pickAndEditRecord ( SpeciesData * species_data );
+void pickAndDeleteRecord ( SpeciesData * species_data );
+void sortRecords ( SpeciesData * species_data );
+void clearCurrentRecords ( SpeciesData * species_data );
+void loadDataFromCSV ( SpeciesData * species_data );
+void saveAsCSV ( SpeciesData * species_data );
+void displaySpeciesDataAsBarChart ( SpeciesData * species_data );
 
 int
-mainMenu ( Species * species_data )
+mainMenu ( SpeciesData * species_data )
 {
     int main_menu_choice;
     int quit = 0;
@@ -74,7 +74,7 @@ displayMainMenu ()
 }
 
 static void
-doChosenAction ( int main_menu_choice, Species * species_data )
+doChosenAction ( int main_menu_choice, SpeciesData * species_data )
 {
     switch ( main_menu_choice )
     {
@@ -126,9 +126,9 @@ confirmQuit ()
     input_buffer [ strcspn ( input_buffer, "\n" ) ] = 0;
 
     // convert string to lowercase
-    for ( char * ptr = input_buffer; * ptr; ++ ptr )
+    for ( char * char_ptr = input_buffer; * char_ptr; ++ char_ptr )
     {
-        * ptr = tolower ( * ptr );
+        * char_ptr = tolower ( * char_ptr );
     }
 
     //strcmp returns 0 if the strings are equal

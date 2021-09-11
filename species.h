@@ -10,4 +10,10 @@ typedef struct
 }
 Species;
 
+typedef struct
+{
+    Species * records;
+    int length;
+} SpeciesData;
+
 #endif

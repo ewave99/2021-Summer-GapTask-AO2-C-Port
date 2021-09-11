@@ -7,30 +7,31 @@
 #include "species.h"
 
 /* function declarations */
-void inputSpeciesData ( Species * species_data );
-void inputSpeciesName ( Species * species_data, char * input_buffer, char * ignore_exists );
-static int checkIfNameExists ( Species * species_data, char * name, char * ignore );
+void inputSpeciesData ( SpeciesData * species_data );
+void inputSpeciesName ( SpeciesData * species_data, char * input_buffer, char * ignore_exists );
+static int checkIfNameExists ( SpeciesData * species_data, char * name, char * ignore );
 void inputSpeciesCount ( char * input_buffer );
 
 void
-inputSpeciesData ( Species * species_data )
+inputSpeciesData ( SpeciesData * species_data )
 {
     char input_buffer [ INPUT_LENGTH_LIMIT ];
     
     char name [ INPUT_LENGTH_LIMIT ];
     int count;
 
-    Species * ptr;
+    Species * record_ptr;
 
-    int index = 0;
+    int record_index;
     
-    ptr = species_data;
+    record_ptr = species_data -> records;
+    record_index = 0;
 
     // fast forward till we get to the first empty struct
-    while ( index < 16 && strcmp ( ptr -> name, "" ) != 0 )
+    while ( record_index < species_data -> length && strcmp ( record_ptr -> name, "" ) != 0 )
     {
-        ptr ++;
-        index ++;
+        record_ptr ++;
+        record_index ++;
     }
 
     puts ( "INPUT SPECIES DATA:" );
@@ -38,13 +39,12 @@ inputSpeciesData ( Species * species_data )
     puts ( "Inputting species data. Leave either field blank to stop." );
     puts ( "" );
 
-    // input species name (pass pointer to species array so we can check if
+    // input species name (pass pointer to species data frame so we can check if
     // a name already exists).
-    // 2021-06-08: for some reason this functionality isn't working
     inputSpeciesName ( species_data, input_buffer, "" );
 
     // input until user leaves the input blank
-    while ( strcmp ( input_buffer, "" ) != 0 && index < 16 )
+    while ( strcmp ( input_buffer, "" ) != 0 && record_index < species_data -> length )
     {
         strcpy ( name, input_buffer );
 
@@ -59,29 +59,47 @@ inputSpeciesData ( Species * species_data )
             count = atoi ( input_buffer );
 
             // add the information to the current record
-            strcpy ( ptr -> name, name );
-            ptr -> count = count;
+            strcpy ( record_ptr -> name, name );
+            record_ptr -> count = count;
 
-            index ++;
-            ptr ++;
+            record_index ++;
+            record_ptr ++;
 
-            if ( index < 16 )
-            {
-                puts ( "" );
-
-                inputSpeciesName ( species_data, input_buffer, "" );
-            }
-            else
+            if ( record_index >= species_data -> length )
             {
                 // from testing we see that pointer is not NULL. Don't know
                 // why though.
-                if ( ptr == NULL )
+                if ( record_ptr == NULL )
                 {
                     puts ( "pointer is NULL." );
                 }
-                // future: reallocate memory for a larger array.
-                puts ( "Limit of 16 records reached." );
+
+                // reallocate array so number of records is increased by 16
+                species_data -> records = ( Species * ) realloc ( species_data -> records, species_data -> length + 16 );
+                species_data -> length += 16;
+
+                if ( species_data -> records == NULL ) {
+                    puts ( "data is NULL after realloc" );
+                }
+
+                // re-coordinate record pointer so it points to the proper memory location of the newly reallocated array.
+                // this is necessary because when realloc is called, it does the work of copying the contents of the array
+                // to a new memory location if needs be in order to access a larger block of continuous memory.
+                int record_old_index = record_index;
+
+                record_ptr = species_data -> records;
+                record_index = 0;
+
+                while ( record_index < record_old_index )
+                {
+                    record_ptr ++;
+                    record_index ++;
+                }
             }
+
+            puts ( "" );
+
+            inputSpeciesName ( species_data, input_buffer, "" );
         }
     }
 
@@ -92,7 +110,7 @@ inputSpeciesData ( Species * species_data )
 }
 
 void
-inputSpeciesName ( Species * species_data, char * input_buffer, char * ignore_exists )
+inputSpeciesName ( SpeciesData * species_data, char * input_buffer, char * ignore_exists )
 {
     int name_exists;
 
@@ -123,7 +141,7 @@ inputSpeciesName ( Species * species_data, char * input_buffer, char * ignore_ex
 
 // 0 for does not exist; 1 for does exist
 static int
-checkIfNameExists ( Species * species_data, char * name, char * ignore )
+checkIfNameExists ( SpeciesData * species_data, char * name, char * ignore )
 {
     int name_exists;
 
@@ -132,8 +150,8 @@ checkIfNameExists ( Species * species_data, char * name, char * ignore )
     // default existence of name is 0
     name_exists = 0;
 
-    // create pointer to initial element of species_data
-    species_data_ptr = species_data;
+    // create pointer to initial element of species_data -> records
+    species_data_ptr = species_data -> records;
 
     // while the name does not exist and the 'name' value of the current species
     // struct = 

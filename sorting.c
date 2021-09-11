@@ -9,7 +9,7 @@ static int compareNamesAsc ( const void * a, const void * b );
 static int compareNamesDesc ( const void * a, const void * b );
 static int compareCountsAsc ( const void * a, const void * b );
 static int compareCountsDesc ( const void * a, const void * b );
-void sortRecords ( Species * species_data );
+void sortRecords ( SpeciesData * species_data );
 
 static int
 compareNamesAsc ( const void * a, const void * b )
@@ -36,33 +36,33 @@ compareCountsDesc ( const void * a, const void * b )
 }
 
 void
-sortRecords ( Species * species_data )
+sortRecords ( SpeciesData * species_data )
 {
-    Species * ptr;
-    int i;
+    Species * record_ptr;
+    int record_index;
     int field_choice;
     int reverse;
 
     puts ( "SORT RECORDS:" );
 
     /* walk through all species data until we get to the first blank record */
-    ptr = species_data;
-    i = 0;
+    record_ptr = species_data -> records;
+    record_index = 0;
 
-    while ( strcmp ( ptr -> name, "" ) != 0 && i < 16 )
+    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
     {
-        ptr ++;
-        i ++;
+        record_ptr ++;
+        record_index ++;
     }
 
-    if ( i == 0 )
+    if ( record_index == 0 )
     {
         puts ( "No records to sort." );
         puts ( "" );
 
         return;
     }
-    if ( i == 1 )
+    if ( record_index == 1 )
     {
         puts ( "Only one record in data." );
         puts ( "" );
@@ -91,21 +91,21 @@ sortRecords ( Species * species_data )
     if ( field_choice == 1 )
     {
         if ( reverse == 1 ) {
-            qsort ( species_data, i, sizeof ( Species ), compareNamesAsc );
+            qsort ( species_data -> records, record_index, sizeof ( Species ), compareNamesAsc );
         }
         else
         {
-            qsort ( species_data, i, sizeof ( Species ), compareNamesDesc );
+            qsort ( species_data -> records, record_index, sizeof ( Species ), compareNamesDesc );
         }
     }
     else
     {
         if ( reverse == 1 ) {
-            qsort ( species_data, i, sizeof ( Species ), compareCountsAsc );
+            qsort ( species_data -> records, record_index, sizeof ( Species ), compareCountsAsc );
         }
         else
         {
-            qsort ( species_data, i, sizeof ( Species ), compareCountsDesc );
+            qsort ( species_data -> records, record_index, sizeof ( Species ), compareCountsDesc );
         }
     }
 

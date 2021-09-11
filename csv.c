@@ -6,13 +6,13 @@
 #include "generic.h"
 #include "species.h"
 
-void loadDataFromCSV ( Species * species_data );
-static void parseCSVIntoStructs ( Species * species_data, int mode, FILE * file );
+void loadDataFromCSV ( SpeciesData * species_data );
+static void parseCSVIntoStructs ( SpeciesData * species_data, int mode, FILE * file );
 
-void saveAsCSV ( Species * species_data );
+void saveAsCSV ( SpeciesData * species_data );
 
 void
-loadDataFromCSV ( Species * species_data )
+loadDataFromCSV ( SpeciesData * species_data )
 {
     int mode;
     char input_buffer [ INPUT_LENGTH_LIMIT ];
@@ -80,7 +80,7 @@ loadDataFromCSV ( Species * species_data )
 }
 
 static void
-parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
+parseCSVIntoStructs ( SpeciesData * species_data, int mode, FILE * file )
 {
     Species * record_ptr;
     int record_index;
@@ -95,14 +95,14 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
 
     char * ptr_to_char_in_current_field;
 
-    record_ptr = species_data;
+    record_ptr = species_data -> records;
     record_index = 0;
 
     /* if the user has chosen to append to the data */
     if ( mode == 1 )
     {
         /* fast forward to first blank record */
-        while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < 16 )
+        while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
         {
             record_ptr ++;
             record_index ++;
@@ -120,8 +120,8 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
         return;
     }
 
-    /* while record index < 16 and we are not at the end of the file */
-    while ( record_index < 16 && fgets_return_value != NULL )
+    /* while record index < number of records and we are not at the end of the file */
+    while ( record_index < species_data -> length && fgets_return_value != NULL )
     {
         /* strip newline character (take into account dos endings) */
         line_buffer [ strcspn ( line_buffer, "\r" ) ] = 0;
@@ -224,9 +224,14 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
         fgets_return_value = fgets ( line_buffer, INPUT_LENGTH_LIMIT, file );
     }
 
-    if ( record_index >= 16 && fgets_return_value != NULL )
+    if ( record_index >= species_data -> length && fgets_return_value != NULL )
     {
-        puts ( "All records filled, no space for more data." );
+        /* puts ( "All records filled, no space for more data." ); */
+
+        /* allocate more memory for the records.
+         * Do this by adding 16 to the current number of records. */
+        species_data -> records = ( Species * ) realloc ( species_data -> records, species_data -> length + 16 );
+        species_data -> length += 16;
         
         return;
     }
@@ -235,7 +240,7 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
     if ( mode == 2 )
     {
         /* blankify the remaining records */
-        while ( record_index < 16 )
+        while ( record_index < species_data -> length )
         {
             strcpy ( record_ptr -> name, "" );
             record_ptr -> count = 0;
@@ -247,7 +252,7 @@ parseCSVIntoStructs ( Species * species_data, int mode, FILE * file )
 }
 
 void
-saveAsCSV ( Species * species_data )
+saveAsCSV ( SpeciesData * species_data )
 {
     Species * record_ptr;
     int record_index;
@@ -273,10 +278,10 @@ saveAsCSV ( Species * species_data )
 
     file = fopen ( input_buffer, "w" );
 
-    record_ptr = species_data;
+    record_ptr = species_data -> records;
     record_index = 0;
 
-    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < 16 )
+    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
     {
         fprintf ( file, "%s,%d\n", record_ptr -> name, record_ptr -> count );
 

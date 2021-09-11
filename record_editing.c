@@ -5,18 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-void pickAndEditRecord ( Species * species_data );
-void inputSpeciesName ( Species * species_data, char * input_buffer, char * ignore_exists );
+void pickAndEditRecord ( SpeciesData * species_data );
+void inputSpeciesName ( SpeciesData * species_data, char * input_buffer, char * ignore_exists );
 void inputSpeciesCount ( char * input_buffer );
-void pickAndDeleteRecord ( Species * species_data );
-void clearCurrentRecords ( Species * species_data );
+void pickAndDeleteRecord ( SpeciesData * species_data );
+void clearCurrentRecords ( SpeciesData * species_data );
 
 void
-pickAndEditRecord ( Species * species_data )
+pickAndEditRecord ( SpeciesData * species_data )
 {
     Species * record_ptr;
     
-    int i;
+    int record_index;
     int chosen_record;
 
     int chosen_field;
@@ -27,29 +27,29 @@ pickAndEditRecord ( Species * species_data )
 
     /* fast-forward through species data to find the index of the first empty
      * record, printing out the record fields along the way */
-    record_ptr = species_data;
-    i = 1;
+    record_ptr = species_data -> records;
+    record_index = 1;
 
     if ( strcmp ( record_ptr -> name, "" ) != 0 )
         puts ( "" );
 
-    while ( strcmp ( record_ptr -> name, "" ) != 0 )
+    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
     {
-        printf ( "(%d) %s, %d\n", i, record_ptr -> name, record_ptr -> count );
+        printf ( "(%d) %s, %d\n", record_index, record_ptr -> name, record_ptr -> count );
         record_ptr ++;
-        i ++;
+        record_index ++;
     }
 
-    /* if i hasn't changed then there are no records to edit */
-    if ( i == 1 )
+    /* if record_index hasn't changed then there are no records to edit */
+    if ( record_index == 1 )
     {
         puts ( "No records to edit." );
         puts ( "" );
 
         return;
     }
-    /* if i has changed by one then there is 1 record to edit. */
-    else if ( i == 2 )
+    /* if record_index has changed by one then there is 1 record to edit. */
+    else if ( record_index == 2 )
     {
         chosen_record = 1;
 
@@ -58,7 +58,7 @@ pickAndEditRecord ( Species * species_data )
     else
     {
         puts ( "" );
-        chosen_record = getNumericChoice ( i - 1, "Enter number of chosen record: ", "Invalid option." );
+        chosen_record = getNumericChoice ( record_index - 1, "Enter number of chosen record: ", "Invalid option." );
     }
 
     if ( chosen_record == 1 )
@@ -85,15 +85,15 @@ pickAndEditRecord ( Species * species_data )
 
     puts ( "" );
 
-    record_ptr = species_data;
+    record_ptr = species_data -> records;
     /* index is offset by 1, but this still gets us to the right record */
-    i = 1;
+    record_index = 1;
 
     /* fast forward to the chosen record */
-    while ( i < chosen_record && strcmp ( record_ptr -> name, "" ) != 0 )
+    while ( record_index < chosen_record && strcmp ( record_ptr -> name, "" ) != 0 )
     {
         record_ptr ++;
-        i ++;
+        record_index ++;
     }
 
     /* user chooses field they want to change */
@@ -125,11 +125,11 @@ pickAndEditRecord ( Species * species_data )
 }
 
 void
-pickAndDeleteRecord ( Species * species_data )
+pickAndDeleteRecord ( SpeciesData * species_data )
 {
     Species * record_ptr;
     
-    int i;
+    int record_index;
     int chosen_record;
 
     char input_buffer [ INPUT_LENGTH_LIMIT ];
@@ -138,29 +138,29 @@ pickAndDeleteRecord ( Species * species_data )
 
     /* fast-forward through species data to find the index of the first empty
      * record, printing out the record fields along the way */
-    record_ptr = species_data;
-    i = 1;
+    record_ptr = species_data -> records;
+    record_index = 1;
 
     if ( strcmp ( record_ptr -> name, "" ) != 0 )
         puts ( "" );
 
-    while ( strcmp ( record_ptr -> name, "" ) != 0 )
+    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
     {
-        printf ( "(%d) %s, %d\n", i, record_ptr -> name, record_ptr -> count );
+        printf ( "(%d) %s, %d\n", record_index, record_ptr -> name, record_ptr -> count );
         record_ptr ++;
-        i ++;
+        record_index ++;
     }
 
-    /* if i hasn't changed then there are no records to delete */
-    if ( i == 1 )
+    /* if record_index hasn't changed then there are no records to delete */
+    if ( record_index == 1 )
     {
         puts ( "No records to delete." );
         puts ( "" );
 
         return;
     }
-    /* if i has changed by one then there is 1 record to delete. */
-    else if ( i == 2 )
+    /* if record_index has changed by one then there is 1 record to delete. */
+    else if ( record_index == 2 )
     {
         chosen_record = 1;
 
@@ -169,7 +169,7 @@ pickAndDeleteRecord ( Species * species_data )
     else
     {
         puts ( "" );
-        chosen_record = getNumericChoice ( i - 1, "Enter number of chosen record: ", "Invalid option." );
+        chosen_record = getNumericChoice ( record_index - 1, "Enter number of chosen record: ", "Invalid option." );
     }
 
     if ( chosen_record == 1 )
@@ -196,27 +196,27 @@ pickAndDeleteRecord ( Species * species_data )
 
     puts ( "" );
 
-    record_ptr = species_data;
+    record_ptr = species_data -> records;
     /* index is offset by 1, but this still gets us to the right record */
-    i = 1;
+    record_index = 1;
 
     /* fast forward to the chosen record */
-    while ( i < chosen_record && strcmp ( record_ptr -> name, "" ) != 0 )
+    while ( record_index < chosen_record && strcmp ( record_ptr -> name, "" ) != 0 )
     {
         record_ptr ++;
-        i ++;
+        record_index ++;
     }
 
     Species * record_ptr_last;
 
-    /* for each record that comes after the chosed record, copy its contents
+    /* for each record that comes after the chosen record, copy its contents
      * into the record to the left of it. */
-    while ( i < 15 )
+    while ( record_index < 15 )
     {
         record_ptr_last = record_ptr;
 
         record_ptr ++;
-        i ++;
+        record_index ++;
 
         strcpy ( record_ptr_last -> name, record_ptr -> name );
         record_ptr_last -> count = record_ptr -> count;
@@ -227,26 +227,26 @@ pickAndDeleteRecord ( Species * species_data )
 }
 
 void
-clearCurrentRecords ( Species * species_data )
+clearCurrentRecords ( SpeciesData * species_data )
 {
     Species * record_ptr;
-    int i;
+    int record_index;
 
     char input_buffer [ INPUT_LENGTH_LIMIT ];
 
     puts ( "CLEARING ALL RECORDS:" );
 
-    record_ptr = species_data;
-    i = 0;
+    record_ptr = species_data -> records;
+    record_index = 0;
 
-    while ( strcmp ( record_ptr -> name, "" ) != 0 )
+    while ( strcmp ( record_ptr -> name, "" ) != 0 && record_index < species_data -> length )
     {
         record_ptr ++;
-        i ++;
+        record_index ++;
     }
 
-    /* if i hasn't changed then there are no records to delete */
-    if ( i == 0 )
+    /* if record_index hasn't changed then there are no records to delete */
+    if ( record_index == 0 )
     {
         puts ( "No records to delete." );
         puts ( "" );
@@ -269,10 +269,9 @@ clearCurrentRecords ( Species * species_data )
         return;
     }
 
-
     /* take advantage of the fact that the program doesn't 'see' all the records
      * that come after a record whose name is null, */
-    record_ptr = species_data;
+    record_ptr = species_data -> records;
 
     strcpy ( record_ptr -> name, "" );
     
