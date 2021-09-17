@@ -22,7 +22,7 @@ Original: <https://github.com/ewave99/2021-Summer-GapTask-AO2>
 
 ## Bugs
 
-*None at present*
+- The program makes all the records apart from one invisible if the number of records exceeds 16
 
 ## Build
 
