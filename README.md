@@ -18,11 +18,13 @@ Original: <https://github.com/ewave99/2021-Summer-GapTask-AO2>
 
 ## To do
 
-- Create a branch to experiment with using a linked-list implementation of the list of Species records
+- Nothing at present
 
 ## Bugs
 
-- The program makes all the records apart from one invisible if the number of records exceeds 16
+- The program makes all the records apart from one invisible if the number of records exceeds 16.
+  This could be because when the array of records is dynamically reallocated, the parent function
+  that is using the array has not updated the array pointer to point to the newly allocated array.
 
 ## Build
 
